@@ -1,10 +1,12 @@
 package com.jovana.chatapp.service;
 
 import com.jovana.chatapp.dto.LoginRequestDto;
+import com.jovana.chatapp.dto.LoginResponseDto;
 import com.jovana.chatapp.dto.RegisterRequestDto;
 import com.jovana.chatapp.dto.UserResponseDto;
 import com.jovana.chatapp.entity.User;
 import com.jovana.chatapp.repository.UserRepository;
+import com.jovana.chatapp.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,14 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public UserResponseDto register(RegisterRequestDto request) {
@@ -42,7 +48,7 @@ public class AuthService {
         );
     }
 
-    public UserResponseDto login(LoginRequestDto request) {
+    public LoginResponseDto login(LoginRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
@@ -50,7 +56,10 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        return new UserResponseDto(
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponseDto(
+                token,
                 user.getId(),
                 user.getUsername(),
                 user.getEmail()

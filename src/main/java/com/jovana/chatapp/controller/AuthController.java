@@ -1,6 +1,7 @@
 package com.jovana.chatapp.controller;
 
 import com.jovana.chatapp.dto.LoginRequestDto;
+import com.jovana.chatapp.dto.LoginResponseDto;
 import com.jovana.chatapp.dto.RegisterRequestDto;
 import com.jovana.chatapp.dto.UserResponseDto;
 import com.jovana.chatapp.service.AuthService;
@@ -22,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public UserResponseDto login(@RequestBody LoginRequestDto request) {
+    public LoginResponseDto login(@RequestBody LoginRequestDto request) {
         return authService.login(request);
     }
 }
