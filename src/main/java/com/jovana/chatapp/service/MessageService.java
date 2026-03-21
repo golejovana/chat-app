@@ -29,6 +29,10 @@ public class MessageService {
         User sender = userRepository.findByEmail(email)
                 .orElseThrow();
 
+        if (!room.getMembers().contains(sender)) {
+            throw new RuntimeException("User is not a member of this room");
+        }
+
         Message message = Message.builder()
                 .content(content)
                 .timestamp(LocalDateTime.now())
@@ -40,7 +44,17 @@ public class MessageService {
         return toDto(saved);
     }
 
-    public List<MessageResponseDto> getMessages(Long roomId) {
+    public List<MessageResponseDto> getMessages(Long roomId, String email) {
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow();
+
+        if (!room.getMembers().contains(user)) {
+            throw new RuntimeException("User is not a member of this room");
+        }
+
         return messageRepository.findByChatRoomIdOrderByTimestampAsc(roomId)
                 .stream()
                 .map(this::toDto)

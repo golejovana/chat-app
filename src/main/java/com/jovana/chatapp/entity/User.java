@@ -2,10 +2,12 @@ package com.jovana.chatapp.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "users")
 @Data
+@EqualsAndHashCode(of = "id")
 public class User {
 
     @Id

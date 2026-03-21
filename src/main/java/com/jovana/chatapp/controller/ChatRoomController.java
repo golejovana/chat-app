@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
+
 import java.security.Principal;
 import java.util.List;
 
@@ -39,5 +40,12 @@ public class ChatRoomController {
         String email = authentication.getName(); // iz JWT-a
 
         return chatRoomService.joinRoom(roomId, email);
+    }
+
+    @PostMapping("/{roomId}/leave")
+    public ChatRoomResponseDto leaveRoom(@PathVariable Long roomId,
+                                         Authentication authentication) {
+        String email = authentication.getName();
+        return chatRoomService.leaveRoom(roomId, email);
     }
 }

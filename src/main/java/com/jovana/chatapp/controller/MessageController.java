@@ -24,7 +24,8 @@ public class MessageController {
     }
 
     @GetMapping("/{roomId}")
-    public List<MessageResponseDto> getMessages(@PathVariable Long roomId) {
-        return messageService.getMessages(roomId);
+    public List<MessageResponseDto> getMessages(@PathVariable Long roomId,
+                                                Principal principal) {
+        return messageService.getMessages(roomId, principal.getName());
     }
 }

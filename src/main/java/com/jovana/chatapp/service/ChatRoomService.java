@@ -81,4 +81,20 @@ public class ChatRoomService {
 
         return toDto(chatRoomRepository.save(room));
     }
+    public ChatRoomResponseDto leaveRoom(Long roomId, String email) {
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow();
+
+        if (room.getOwner().getId().equals(user.getId())) {
+            throw new RuntimeException("Owner cannot leave their own room");
+        }
+
+        room.getMembers().remove(user);
+
+        ChatRoom savedRoom = chatRoomRepository.save(room);
+        return toDto(savedRoom);
+    }
 }
